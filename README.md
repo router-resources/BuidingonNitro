@@ -61,9 +61,7 @@ To request a quote, follow these steps:
 2. Create the `getQuote` Function: This function handles the quote request. It uses the `axios` library to make an HTTP GET request to the Voyager Pathfinder API.
 
    ```
-   
-   
-  const getQuote = async (params) => {
+   const getQuote = async (params) => {
 		const endpoint = "v2/quote"
 		const quoteUrl = `${PATH_FINDER_API_URL}/${endpoint}`
 	
