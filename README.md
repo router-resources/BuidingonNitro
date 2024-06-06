@@ -32,7 +32,7 @@ This Demo app demonstrate how to use Nitro to transsfer AFTT Tokens from Holsky 
 
 After you have run the dapp on your localhost, it's time to undertand how does the dapp works.
 
-All you need is just 3 easy steps to integrate Voyager into any dapp :-
+All you need is just 3 easy steps to integrate Nitro into any dapp :-
 
 **Step1: Get the Quote**
 
