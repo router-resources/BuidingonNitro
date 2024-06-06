@@ -19,7 +19,7 @@ npm install
 Run on localhost
 
 ```
-npm start
+npm run dev
 ```
 Your application will start running
 
