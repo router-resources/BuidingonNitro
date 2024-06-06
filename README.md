@@ -9,7 +9,7 @@ The Lastest Version employs a trustless method for managing cross-chain asset tr
 I know, you got bored of the theory. Not going into much theory from now on, let's start building. Clone the repository in your local.
 
 ```
-git clone https://github.com/ShivankK26/Router-Nitro-dApp
+git clone https://github.com/router-resources/BuidingonNitro.git
 ```
 Install the necessary packages
 
