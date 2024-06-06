@@ -79,15 +79,15 @@ To request a quote, follow these steps:
 3. Call the `getQuote` Function: Use this function to request a quote by passing appropriate parameters.In this repository , this function is called using a a button.
 
    ```javascript
-   // Example usage:
+  
    const quoteParams = {
-				'fromTokenAddress': from,
-				'toTokenAddress': to,
+				'fromTokenAddress': source_token_address,
+				'toTokenAddress': destination_token_address,
 				'amount': amount,
-				'fromTokenChainId': "80001",
-				'toTokenChainId': "43113", // Fuji
+				'fromTokenChainId': source_chain_id,
+				'toTokenChainId': destination_chain_id, 
 		
-				'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
+				'widgetId': 0,
 			}
    
    const quoteData = await getQuote(quoteParams);
