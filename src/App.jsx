@@ -1,16 +1,16 @@
 import React,{useState,useEffect} from 'react'
 import axios from "axios"
 import { ethers } from 'ethers';
-import './App.css'
+
 
 function App() {
 	
-	 const from="0x22bAA8b6cdd31a0C5D1035d6e72043f4Ce6aF054";
-	 const to="0xb452b513552aa0B57c4b1C9372eFEa78024e5936";
+	 const from="0x69dc97bb33e9030533ca2006ab4cef67f4db4125";
+	 const to="0x5c2c6ab36a6e4e160fb9c529e164b7781f7d255f";
 	 const [amount,setAmount]=useState(0)
 	 
 	const [quoteData,setQuoteData]=useState('')
-	const [polygonBalance,setPolygonBalance]=useState(0)
+	const [holskyBalance,setholskyBalance]=useState(0)
 	const [avalancheBalance,setAvalancheBalance]=useState(0)
 	const [account,setAccount]=useState('Connect Wallet')
 	const [step1,setStep1]=useState('')
@@ -757,7 +757,8 @@ if(window.ethereum) {
 	
 	  console.log(accounts[0])
 	  const provider = new ethers.providers.Web3Provider(window.ethereum);
-	  const provider1 = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/polygon_mumbai", 80001);
+	  const provider1 = new ethers.providers.JsonRpcProvider("https://rpc.holesky.ethpandaops.io", 17000);
+	  alert (provider1)
 	  const provider2 = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/avalanche_fuji", 43113);
 	  const signer = provider.getSigner();
 
@@ -766,7 +767,7 @@ if(window.ethereum) {
 	  
 
 	  const contract = new ethers.Contract(
-		  from,
+		 to,
 		  erc20_abi,
 		  provider1
 	  );
@@ -774,16 +775,16 @@ if(window.ethereum) {
 
 	  let balance = await contract.balanceOf(accounts[0])
 
-	  console.log(ethers.utils.formatEther(balance)*Math.pow(10,6));
-	  setPolygonBalance(ethers.utils.formatEther(balance)*Math.pow(10,6))
+	  console.log(ethers.utils.formatEther(balance)*Math.pow(10,18));
+	  setholskyBalance(ethers.utils.formatEther(balance))
 	  const contract2 = new ethers.Contract(
-		to,
+		from,
 		erc20_abi,
 		provider2
 	);
 	balance = await contract2.balanceOf(accounts[0])
 	  console.log(ethers.utils.formatEther(balance)*Math.pow(10,12));
-	  setAvalancheBalance(ethers.utils.formatEther(balance)*Math.pow(10,12))
+	  setAvalancheBalance(ethers.utils.formatEther(balance))
 
 	}
 	catch(err) {
@@ -795,17 +796,17 @@ if(window.ethereum) {
 		</div>
 		<br></br>
 		<br></br><br></br>
-		<h5>Transfer UDST from Polygon Mumbai to Avalanche Fuji</h5>
+		<h5>Transfer AFTT from Fuji to Holsky</h5>
 		<br></br>
-		<div>Polygon: {polygonBalance}&nbsp;&nbsp;&nbsp;&nbsp;Avalanche: {avalancheBalance}</div>
+		<div>Fuji: {avalancheBalance}&nbsp;&nbsp;&nbsp;&nbsp;Holsky: {holskyBalance}</div>
 		
 		
 		
 		<br></br>
-		<input placeholder='Enter Amount' onChange={(e)=>{setAmount(e.target.value*Math.pow(10,12))}}></input>
+		<input placeholder='Enter Amount' onChange={(e)=>{setAmount(e.target.value*Math.pow(10,18))}}></input>
 		<h2>Steps Involved</h2>
 		<br></br>
-{/* {amount} */}
+
 
 
 		<button  class="button-51" onClick={async ()=>{
@@ -814,8 +815,8 @@ if(window.ethereum) {
 				'fromTokenAddress': from,
 				'toTokenAddress': to,
 				'amount': amount,
-				'fromTokenChainId': "80001",
-				'toTokenChainId': "43113", // Fuji
+				'fromTokenChainId': "43113",
+				'toTokenChainId': "17000", // Fuji
         		'partnerId': "0",
 				// 'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
 			}
@@ -834,21 +835,7 @@ if(window.ethereum) {
 
 
 	// setting up a signer
-	// const provider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/polygon_mumbai", 80001);
-	// // use provider.getSigner() method to get a signer if you're using this for a UI
 
-
-	
-	// const wallet = new ethers.Wallet("7de83cb8af577175dd83cfcaa59d8803189c0f95a0f7b8ba239bd7b641de3761", provider)
-	
-
-
-	// }
-
-	 
-		
-	
-		// ❌ Check if Meta Mask Extension exists 
 		if(window.ethereum) {
 		  console.log('detected');
 	
@@ -898,8 +885,8 @@ if(window.ethereum) {
 		  const txResponse = await getTransaction({
 			'fromTokenAddress': from,
 			'toTokenAddress': to,
-			'fromTokenChainId': "80001",
-			'toTokenChainId': "43113", // Fuji
+			'fromTokenChainId': "43113",
+			'toTokenChainId': "17000", // Fuji
 	
 			'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
 		}, quoteData); // params have been defined in step 1 and quoteData has also been fetched in step 1
