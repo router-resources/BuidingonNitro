@@ -174,25 +174,32 @@ const erc20_abi = [
 ];
 
 // Fetch the current allowance and update if needed
-const checkAndSetAllowance = async (wallet, tokenAddress, approvalAddress, amount) => {
-    // Transactions with the native token don't need approval
-    if (tokenAddress === ethers.constants.AddressZero) {
-        return
-    }
 
-    const erc20 = new Contract(tokenAddress, erc20_abi, wallet);
-    const allowance = await erc20.allowance(await wallet.getAddress(), approvalAddress);
-    if (allowance.lt(amount)) {
-        const approveTx = await erc20.approve(approvalAddress, amount, {gasPrice: await wallet.provider.getGasPrice()});
-        try {
-            await approveTx.wait();
-            console.log(`Transaction mined succesfully: ${approveTx.hash}`)
-        }
-        catch (error) {
-            console.log(`Transaction failed with error: ${error}`)
-        }
-    }
-}
+const checkAndSetAllowance = async (wallet, tokenAddress, approvalAddress, amount) => {
+		
+		if (tokenAddress === ethers.constants.AddressZero) {
+			return
+		}
+	
+		// Using the provided token address and the ERC20 ABI, we create an instance of the ERC20 contract.
+		const erc20 = new ethers.Contract(tokenAddress, erc20_abi, wallet);
+		const allowance = await erc20.allowance(await wallet.getAddress(), approvalAddress);
+		if (allowance.lt(amount)) {
+			const approveTx = await erc20.approve(approvalAddress, amount, {gasPrice: await wallet.provider.getGasPrice()});
+			try {
+				await approveTx.wait();
+				console.log(`Transaction mined succesfully: ${approveTx.hash}`)
+			}
+			catch (error) {
+				console.log(`Transaction failed with error: ${error}`)
+			}
+		}
+		else{
+
+			console.log("enough allowance")
+			alert("enough allowance")
+		}
+	}
 ```
 ### 1. Define ERC20 Contract ABI
 
@@ -223,6 +230,38 @@ When the button is clicked your signer (wallet) is set up and the `checkAndSetAl
 
 Please replace `"YOUR_PRIVATE_KEY"` and other placeholders with your actual private key and the specific token details.
 
+Then the above can be called to check for allowance
+
+```
+	if(window.ethereum) {
+		  console.log('detected');
+	
+		  try {
+			const accounts = await window.ethereum.request({
+			  method: "eth_requestAccounts",
+			});
+
+			console.log(accounts[0])
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+
+			
+
+			await checkAndSetAllowance(
+				signer,
+				from, // fromTokenAddress (USDT on Mumbai)
+				quoteData.allowanceTo, // quote.allowanceTo in getQuote(params) response from step 1
+				ethers.constants.MaxUint256 // amount to approve (infinite approval)
+			);
+			setStep2('✅')
+		  }
+		  catch(err) {
+			console.log(err)
+		  }
+		}
+
+```
+
 ## Step 3: Executing the Transaction
 
 In this step, we will explore how to execute a transaction .This process involves sending a transaction to perform the cross-chain token transfer initiated in Step 1 and configured in Step 2.
@@ -234,54 +273,9 @@ This function is responsible for actually executing the transaction. It takes in
 - **`params`**: Parameters required for the transaction, which should include the source and destination token addresses, slippage tolerance, sender and receiver addresses, and the widget ID.
 - **`quoteData`**: Quote data obtained from Step 1.
 
-When the button is clicked, It performs the following tasks using the function defined:-
 
 ```
-  const provider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/polygon_mumbai", 80001);
-
-    const wallet = new ethers.Wallet("76313c982e5cfdc0c47e36465e5fa90e0db291667296a7bd163178b955162b13", provider)
-    
-	const params ={
-		'fromTokenAddress': from,
-		'toTokenAddress': to,
-		'amount': amount,
-		'fromTokenChainId': "80001",
-		'toTokenChainId': "43113", // Fuji
-
-		'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
-	}
-	
-	const quoteData = await getQuote(params);
-	
-
-	console.log(quoteData)
-   
-    const txResponse = await getTransaction({
-		'fromTokenAddress': from,
-		'toTokenAddress': to,
-		'fromTokenChainId': "80001",
-		'toTokenChainId': "43113", // Fuji
-
-		'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
-	}, quoteData); // params have been defined in step 1 and quoteData has also been fetched in step 1
-
-    // sending the transaction using the data given by the pathfinder
-    const tx = await wallet.sendTransaction(txResponse.txn.execution)
-    try {
-        await tx.wait();
-        console.log(`Transaction mined successfully: ${tx.hash}`)
-    }
-    catch (error) {
-        console.log(`Transaction failed with error: ${error}`)
-    }
-```
-
-- **Signer Setup**: Configures a signer using the specified JSON-RPC provider. Replace `"YOUR_PRIVATE_KEY"` with your actual private key. You can also use the `provider.getSigner()` method if you're implementing this for a user interface (UI).
-
-- **Retrieve Transaction Data**: Calls the `getTransaction` function with the necessary parameters to fetch the transaction data from the Nitro system.
-
-```
-const getTransaction = async (params, quoteData) => {
+  const getTransaction = async (params, quoteData) => {
 		const endpoint = "v2/transaction"
 		const txDataUrl = `${PATH_FINDER_API_URL}/${endpoint}`
 	
@@ -290,19 +284,66 @@ const getTransaction = async (params, quoteData) => {
 		try {
 			const res = await axios.post(txDataUrl, {
 				...quoteData,
-				fromTokenAddress: params.fromTokenAddress,
-				toTokenAddress: params.toTokenAddress,
 				slippageTolerance: 0.5,
 				senderAddress: account,
 				receiverAddress: account,
-				widgetId: params.widgetId
 			})
 			return res.data;
 		} catch (e) {
 			console.error(`Fetching tx data from pathfinder: ${e}`)
 		}    
 	}
+
+```
+Then the above function can be called to execute the transaction
+
+```
+
+if(window.ethereum) {
+		console.log('detected');
+  
+		try {
+		  const accounts = await window.ethereum.request({
+			method: "eth_requestAccounts",
+		  });
+
+		  console.log(accounts[0])
+		  const provider = new ethers.providers.Web3Provider(window.ethereum);
+		  const signer = provider.getSigner();
+
+		  
+
+		  const txResponse = await getTransaction({
+			'fromTokenAddress': source_token_address,
+			'toTokenAddress': destination_token_address,
+			'fromTokenChainId': source_chain_id,
+			'toTokenChainId': destination_chain_id, 
+			'widgetId': 0, 
+		}, quoteData); 
+		
+		// sending the transaction using the data given by the pathfinder
+		const tx = await signer.sendTransaction(txResponse.txn)
+		try {
+			await tx.wait();
+			console.log(`Transaction mined successfully: ${tx.hash}`)
+			alert(`Transaction mined successfully: ${tx.hash}`)
+			
+		}
+		catch (error) {
+			console.log(`Transaction failed with error: ${error}`)
+		}
+		}
+		catch(err) {
+		  console.log(err)
+		}
+	  }
+    
   ```
+
+- **Signer Setup**: Configures a signer using the specified JSON-RPC provider. Replace `"YOUR_PRIVATE_KEY"` with your actual private key. You can also use the `provider.getSigner()` method if you're implementing this for a user interface (UI).
+
+- **Retrieve Transaction Data**: Calls the `getTransaction` function with the necessary parameters to fetch the transaction data from the Nitro system.
+
 
 
 
