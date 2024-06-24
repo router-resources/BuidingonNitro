@@ -5,13 +5,13 @@ import { ethers } from 'ethers';
 
 function App() {
 	
-	 const from="0x69dc97bb33e9030533ca2006ab4cef67f4db4125";
+	 const from="0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43";
 	 const to="0x5c2c6ab36a6e4e160fb9c529e164b7781f7d255f";
 	 const [amount,setAmount]=useState(0)
 	 
 	const [quoteData,setQuoteData]=useState('')
 	const [holskyBalance,setholskyBalance]=useState(0)
-	const [avalancheBalance,setAvalancheBalance]=useState(0)
+	const [sepoliaBalance,setSepoliaBalance]=useState(0)
 	const [account,setAccount]=useState('Connect Wallet')
 	const [step1,setStep1]=useState('')
 	const [step2,setStep2]=useState('')
@@ -736,14 +736,15 @@ function App() {
 		}    
 	}
   return (
-	<div class="body">
+	<div class="body bg-black h-screen">
 
 <center>
 <div class="navbar">
 	
 
-		<h1 class="name">Router Nitro Dapp</h1>
-		<button class="button-52" onClick={async ()=>{
+		<h1 className='text-2xl font-medium  py-[30px] text-white'>Swap using Router Nitro</h1>
+		<button class="button-52 mt-[20px] border border-2 border-purple-600
+		px-[5px] py-[3px] rounded-lg bg-black text-white" onClick={async ()=>{
 
 if(window.ethereum) {
 	console.log('detected');
@@ -759,7 +760,7 @@ if(window.ethereum) {
 	  const provider = new ethers.providers.Web3Provider(window.ethereum);
 	  const provider1 = new ethers.providers.JsonRpcProvider("https://rpc.holesky.ethpandaops.io", 17000);
 	  alert (provider1)
-	  const provider2 = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/avalanche_fuji", 43113);
+	  const provider2 = new ethers.providers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/demo", 11155111);
 	  const signer = provider.getSigner();
 
 	  
@@ -784,7 +785,7 @@ if(window.ethereum) {
 	);
 	balance = await contract2.balanceOf(accounts[0])
 	  console.log(ethers.utils.formatEther(balance)*Math.pow(10,12));
-	  setAvalancheBalance(ethers.utils.formatEther(balance))
+	  setSepoliaBalance(ethers.utils.formatEther(balance))
 
 	}
 	catch(err) {
@@ -796,27 +797,31 @@ if(window.ethereum) {
 		</div>
 		<br></br>
 		<br></br><br></br>
-		<h5>Transfer AFTT from Fuji to Holsky</h5>
+		<h5 className='text-lg fonr-medium border-2 rounded-lg px-[5px] py-[3px] 
+		border-purple-600 bg-black text-white'>Transfer AFTT from Sepolia to Holsky</h5>
 		<br></br>
-		<div>Fuji: {avalancheBalance}&nbsp;&nbsp;&nbsp;&nbsp;Holsky: {holskyBalance}</div>
+		<div className='bg-black text-white border-2 border-purple-600 py-[5px] font-medium'>Sepolia: {sepoliaBalance}&nbsp;&nbsp;&nbsp;&nbsp;Holsky: {holskyBalance}</div>
 		
 		
 		
 		<br></br>
-		<input placeholder='Enter Amount' onChange={(e)=>{setAmount(e.target.value*Math.pow(10,18))}}></input>
-		<h2>Steps Involved</h2>
+		<input placeholder='Enter Amount' onChange={(e)=>{setAmount(e.target.value*Math.pow(10,18))}}
+		className='bg-black text-white py-[3px] border rounded-lg px-[2px]'></input>
+		<h2 className='mt-[40px] bg-purple-600 text-white font-medium
+		py-[3px] '>Steps Involved</h2>
 		<br></br>
 
 
 
-		<button  class="button-51" onClick={async ()=>{
+		<button  class="button-51 mt-[20px] bg-purple-600 text-white font-medium
+		py-[3px] px-[20px]" onClick={async ()=>{
 			
 			const params ={
 				'fromTokenAddress': from,
 				'toTokenAddress': to,
 				'amount': amount,
-				'fromTokenChainId': "43113",
-				'toTokenChainId': "17000", // Fuji
+				'fromTokenChainId': "11155111",
+				'toTokenChainId': "17000", 
         		'partnerId': "0",
 				// 'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
 			}
@@ -827,11 +832,14 @@ if(window.ethereum) {
 			alert(quoteData.allowanceTo)
 		
 			console.log(quoteData)
+
+			
 		}}>Step 1: Get Quote {step1}</button>
 
 		<br></br>
 		<br></br>
-			<button class="button-51" onClick={async () => {
+			<button class="button-51 button-51 mt-[20px] bg-purple-600 text-white font-medium
+		py-[3px] px-[20px]" onClick={async () => {
 
 
 	// setting up a signer
@@ -867,7 +875,8 @@ if(window.ethereum) {
 <br></br>
 <br></br>
 
-<button class="button-51" onClick={async () => {
+<button class="button-51 button-51 mt-[20px] bg-purple-600 text-white font-medium
+		py-[3px] px-[20px]" onClick={async () => {
 	if(window.ethereum) {
 		console.log('detected');
   
@@ -885,8 +894,8 @@ if(window.ethereum) {
 		  const txResponse = await getTransaction({
 			'fromTokenAddress': from,
 			'toTokenAddress': to,
-			'fromTokenChainId': "43113",
-			'toTokenChainId': "17000", // Fuji
+			'fromTokenChainId': "11155111",
+			'toTokenChainId': "17000", 
 	
 			'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
 		}, quoteData); // params have been defined in step 1 and quoteData has also been fetched in step 1
