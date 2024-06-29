@@ -86,7 +86,6 @@ To request a quote, follow these steps:
 				'amount': amount,
 				'fromTokenChainId': source_chain_id,
 				'toTokenChainId': destination_chain_id, 
-		
 				'widgetId': 0,
 			}
    
