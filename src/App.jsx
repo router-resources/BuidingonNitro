@@ -817,8 +817,8 @@ if(window.ethereum) {
 				'amount': amount,
 				'fromTokenChainId': "43113",
 				'toTokenChainId': "17000", // Fuji
-        		'partnerId': "0",
-				// 'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
+        			'partnerId': "0",
+				'widgetId': 0, 
 			}
 			
 			const quoteData = await getQuote(params);
@@ -834,7 +834,7 @@ if(window.ethereum) {
 			<button class="button-51" onClick={async () => {
 
 
-	// setting up a signer
+		// setting up a signer
 
 		if(window.ethereum) {
 		  console.log('detected');
@@ -888,7 +888,7 @@ if(window.ethereum) {
 			'fromTokenChainId': "43113",
 			'toTokenChainId': "17000", // Fuji
 	
-			'widgetId': 0, // get your unique wdiget id by contacting us on Telegram
+			'widgetId': 0, 
 		}, quoteData); // params have been defined in step 1 and quoteData has also been fetched in step 1
 	
 		// sending the transaction using the data given by the pathfinder
